@@ -7,12 +7,12 @@ import socketserver
 from threading import Lock
 from http import server
 
-SMALL=(640, 480)
-MEDIUM=(1280, 720)
+SMALL = (640, 480)
+MEDIUM = (1280, 720)
 
-FORMAT=SMALL
-WIDTH=FORMAT[0]
-HEIGHT=FORMAT[1]
+SIZE = SMALL
+WIDTH = SIZE[0]
+HEIGHT = SIZE[1]
 
 PAGE="""\
 <html>
@@ -104,10 +104,10 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
 class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     pass
 
-with picamera.PiCamera(resolution=FORMAT, framerate=24) as camera:
+with picamera.PiCamera(resolution=SIZE, framerate=24) as camera:
     output = StreamingOutput()
     camera.rotation = 180
-    camera.start_recording(output, format='mjpeg')
+    camera.start_recording(output, format='mjpeg', quality=100)
     try:
         address = ('', 8000)
         server = StreamingServer(address, StreamingHandler)
