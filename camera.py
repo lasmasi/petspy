@@ -17,31 +17,37 @@ PREVIEW = True
 VIDEO_CHUNK_SIZE_MINUTES = 1
 DEBUG = True
 
-def record(duration=5, filename="video", extension="h264"):
-    """Record video of specific duration"""
-    chunks = math.ceil(duration/(VIDEO_CHUNK_SIZE_MINUTES*60.0))
-    print("Video will be split in {} chunk(s).".format(chunks))
-    for i in range(chunks):
-        segment_duration = min((duration - VIDEO_CHUNK_SIZE_MINUTES*60*i), VIDEO_CHUNK_SIZE_MINUTES*60)
-        print("Starting video recording for {} seconds...".format(segment_duration))
-        filename = add_timestamp(filename, extension)
-        camera.start_recording('{}/{}'.format(VIDEO_DIR, filename))
-        camera.wait_recording(segment_duration)
-        camera.stop_recording()
-        print("Stopped video recording: {}".format(filename))
+class Video:
 
-def burst(count=5, filename='image'):
-    """Takes picture in burst mode"""
-    print("Starting to capture pictures in burst mode...")
-    for i in range(count):
-        sleep(1)
-        filename = '{}/{}_{}.jpg'.format(PHOTO_DIR, filename, i)
-        print("Capturing picture {}".format(filename))
-        camera.capture(filename)
-    print("Stopped to capture pictures in burst mode...")
+    @staticmethod
+    def record_to_file(duration=5, filename="video", extension="h264"):
+        """Record video of specific duration"""
+        chunks = math.ceil(duration/(VIDEO_CHUNK_SIZE_MINUTES*60.0))
+        print("Video will be split in {} chunk(s).".format(chunks))
+        for i in range(chunks):
+            segment_duration = min((duration - VIDEO_CHUNK_SIZE_MINUTES*60*i), VIDEO_CHUNK_SIZE_MINUTES*60)
+            print("Starting video recording for {} seconds...".format(segment_duration))
+            filename = add_timestamp(filename, extension)
+            camera.start_recording('{}/{}'.format(VIDEO_DIR, filename))
+            camera.wait_recording(segment_duration)
+            camera.stop_recording()
+            print("Stopped video recording: {}".format(filename))
+
+class Image:
+
+    @staticmethod
+    def burst(count=5, filename='image'):
+        """Takes picture in burst mode"""
+        print("Starting to capture pictures in burst mode...")
+        for i in range(count):
+            sleep(1)
+            filename = '{}/{}_{}.jpg'.format(PHOTO_DIR, filename, i)
+            print("Capturing picture {}".format(filename))
+            camera.capture(filename)
+        print("Stopped to capture pictures in burst mode...")
 
 def add_timestamp(filename, extension):
-    """Add timestamp to given filename, e.g. video-2017-02-18T00-09-20.h264"""
+    """Add timestamp to a given filename, e.g. video-2017-02-18T00-09-20.h264"""
     import datetime
     suffix = datetime.datetime.now().isoformat()
     suffix = suffix.split(".")[0]
@@ -64,7 +70,7 @@ if __name__ == "__main__":
             camera.start_preview()
     sleep(INIT_SLEEP)
 
-    record(RECORDING_TIME_SECS)
+    Video.record_to_file(RECORDING_TIME_SECS)
     #burst(1)
 
     if PREVIEW:
