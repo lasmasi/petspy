@@ -12,7 +12,7 @@ VIDEO_DIR = "/home/pi/Videos"
 PHOTO_DIR = "/home/pi/Pictures"
 
 INIT_SLEEP = 0
-RECORDING_TIME_SECS = 65
+RECORDING_TIME_SECS = 3
 PREVIEW = True
 VIDEO_CHUNK_SIZE_MINUTES = 1
 DEBUG = True
@@ -26,7 +26,7 @@ def record(duration=5, filename="video", extension="h264"):
         print("Starting video recording for {} seconds...".format(segment_duration))
         filename = add_timestamp(filename, extension)
         camera.start_recording('{}/{}'.format(VIDEO_DIR, filename))
-        sleep(segment_duration)
+        camera.wait_recording(segment_duration)
         camera.stop_recording()
         print("Stopped video recording: {}".format(filename))
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     #camera.annotate_text = "{}".format(time.time())
     if PREVIEW:
         if DEBUG:
-            camera.start_preview(alpha=200)
+            camera.start_preview(fullscreen=False, window=(100, 20, 640, 480))
         else:
             camera.start_preview()
     sleep(INIT_SLEEP)
