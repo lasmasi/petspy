@@ -7,6 +7,13 @@ import socketserver
 from threading import Lock
 from http import server
 
+SMALL=(640, 480)
+MEDIUM=(1280, 720)
+
+FORMAT=SMALL
+WIDTH=FORMAT[0]
+HEIGHT=FORMAT[1]
+
 PAGE="""\
 <html>
 <head>
@@ -14,10 +21,10 @@ PAGE="""\
 </head>
 <body>
 <h1>The Two Munchkins</h1>
-<img src="stream.mjpg" width="1280" height=720"" />
+<img src="stream.mjpg" width="{}" height="{}" />
 </body>
 </html>
-"""
+""".format(WIDTH, HEIGHT)
 
 class StreamingOutput(object):
     def __init__(self):
@@ -97,7 +104,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
 class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     pass
 
-with picamera.PiCamera(resolution=(1280, 720), framerate=24) as camera:
+with picamera.PiCamera(resolution=FORMAT, framerate=24) as camera:
     output = StreamingOutput()
     camera.rotation = 180
     camera.start_recording(output, format='mjpeg')
