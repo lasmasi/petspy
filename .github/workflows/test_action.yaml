@@ -1,0 +1,16 @@
+name: Test Action
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: print github values to test
+
+    steps:
+      - name: print github values
+        run: | 
+          echo "${{github.base_ref}}"
